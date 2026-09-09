@@ -1,0 +1,426 @@
+@import "tailwindcss";
+@theme inline {
+  --font-sans: "Geist", sans-serif;
+  --font-editor: "Inter", sans-serif;
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-surface: #fafafa;
+  --color-hover: #f5f5f5;
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-soft: #eef2ff;
+  --color-secondary: #6b7280;
+  --color-muted: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-soft: #f1f5f9;
+  --color-selection: #f8f8ff;
+  --color-selection-border: #e5e5f5;
+}
+:root {
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+body {
+  margin: 0;
+  background: #fff;
+  font-family: "Geist", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button,
+[role="menuitem"] {
+  cursor: pointer;
+}
+button,
+input,
+textarea,
+[contenteditable="true"] {
+  outline-offset: 2px;
+}
+a:focus-visible,
+select:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[contenteditable="true"]:focus-visible {
+  outline: 2px solid #a5b4fc;
+}
+::selection {
+  background: #e0e7ff;
+}
+.flow-logo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 25px;
+  transform: skewY(-9deg);
+}
+.flow-logo i {
+  display: block;
+  height: 5px;
+  border-radius: 1.5px;
+  background: #4f46e5;
+}
+.flow-logo i:nth-child(1) {
+  width: 23px;
+}
+.flow-logo i:nth-child(2) {
+  width: 18px;
+}
+.flow-logo i:nth-child(3) {
+  width: 11px;
+}
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.tag-indigo {
+  background: #eeedfa;
+  color: #69608e;
+}
+.tag-sage {
+  background: #edf2ed;
+  color: #526f56;
+}
+.tag-amber {
+  background: #f5f0e6;
+  color: #806a3e;
+}
+.tag-rose {
+  background: #f6ecee;
+  color: #94656e;
+}
+.tag-slate {
+  background: #edf0f3;
+  color: #626f82;
+}
+.tag-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-indigo {
+  background: #a5a0d1;
+}
+.dot-sage {
+  background: #9aafa0;
+}
+.dot-amber {
+  background: #cbb68e;
+}
+.dot-rose {
+  background: #cea5ae;
+}
+.dot-slate {
+  background: #9cabbd;
+}
+.note-content {
+  font-family: "Inter", sans-serif;
+  color: #59616d;
+  font-size: 14px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.note-content > p {
+  margin: 0 0 20px;
+}
+.note-content h2 {
+  margin: 30px 0 12px;
+  font-family: "Geist", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  line-height: 1.4;
+  color: #202633;
+}
+.note-image {
+  margin: 28px 0 30px;
+}
+.note-image figcaption {
+  margin-top: 10px;
+  font-family: "Geist", sans-serif;
+  font-size: 11px;
+  text-align: center;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+.note-content blockquote {
+  margin: 23px 0;
+  border-left: 2px solid #c7c5ed;
+  padding: 4px 0 4px 18px;
+  color: #7b7b8c;
+  font-style: italic;
+}
+.note-bullet {
+  display: flex;
+  gap: 12px;
+  margin: 6px 0;
+}
+.note-bullet > span {
+  color: #aaa5d2;
+}
+[contenteditable="true"] {
+  border-radius: 3px;
+  min-height: 1.5em;
+}
+[contenteditable="true"]:hover {
+  background: #fafaff;
+}
+@media (min-width: 1500px) {
+  .app-sidebar {
+    width: 240px;
+  }
+  .notes-panel {
+    width: 360px;
+  }
+  .editor-document {
+    padding-top: 36px;
+  }
+}
+@media (max-width: 767px) {
+  .note-content {
+    font-size: 14px;
+  }
+  .note-title {
+    font-size: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+
+/* Reserve a narrow gutter so content does not shift as lists grow. */
+.sidebar-scroll,
+.notes-scroll,
+.editor-scroll {
+  scrollbar-gutter: stable;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--color-border);
+  background-clip: padding-box;
+}
+.note-title {
+  overflow-wrap: anywhere;
+}
+@media (max-height: 800px) and (min-width: 768px) {
+  .editor-document {
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+}
+.auth-input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+}
+
+/* Rich document typography lives alongside the existing editor's design tokens. */
+.flownote-prose {
+  min-height: 35vh;
+  outline: none;
+  white-space: pre-wrap;
+}
+.flownote-prose > * + * {
+  margin-top: 16px;
+}
+.flownote-prose p {
+  margin-bottom: 0;
+}
+.flownote-prose h1,
+.flownote-prose h2,
+.flownote-prose h3 {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.35;
+  margin: 24px 0 12px;
+}
+.flownote-prose h1 {
+  font-size: 28px;
+}
+.flownote-prose h2 {
+  font-size: 22px;
+}
+.flownote-prose h3 {
+  font-size: 17px;
+}
+.flownote-prose > :first-child {
+  margin-top: 0;
+}
+.flownote-prose ul,
+.flownote-prose ol {
+  padding-left: 24px;
+}
+.flownote-prose ul {
+  list-style: disc;
+}
+.flownote-prose ol {
+  list-style: decimal;
+}
+.flownote-prose li {
+  padding-left: 3px;
+  margin: 5px 0;
+}
+.flownote-prose li p {
+  margin: 0;
+}
+.flownote-prose li > ul,
+.flownote-prose li > ol {
+  margin: 6px 0;
+}
+.flownote-prose ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+.flownote-prose li[data-type="taskItem"] {
+  display: flex;
+  gap: 10px;
+  padding-left: 0;
+}
+.flownote-prose li[data-type="taskItem"] > label {
+  flex: 0 0 auto;
+  padding-top: 2px;
+  user-select: none;
+}
+.flownote-prose li[data-type="taskItem"] > div {
+  min-width: 0;
+  flex: 1;
+}
+.flownote-prose input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+.flownote-prose[contenteditable="false"] input[type="checkbox"] {
+  cursor: default;
+}
+.flownote-prose li[data-checked="true"] > div > p {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+.flownote-prose blockquote {
+  border-left: 2px solid #c7c5ed;
+  margin: 20px 0;
+  padding: 4px 0 4px 18px;
+  color: var(--color-secondary);
+}
+.flownote-prose code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.88em;
+  background: var(--color-hover);
+  color: #65569a;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+.flownote-prose pre {
+  overflow-x: auto;
+  white-space: pre;
+  background: var(--color-surface);
+  border: 1px solid var(--color-soft);
+  border-radius: 8px;
+  padding: 16px 18px;
+  line-height: 1.7;
+}
+.flownote-prose pre code {
+  padding: 0;
+  color: var(--color-foreground);
+  background: none;
+}
+.flownote-prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 28px 0;
+}
+.flownote-prose a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.flownote-prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 24px 0;
+}
+.flownote-prose img.ProseMirror-selectednode {
+  outline: 2px solid #c7c5ed;
+  outline-offset: 3px;
+}
+.flownote-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-muted);
+  pointer-events: none;
+  height: 0;
+}
+.flownote-prose .ProseMirror-gapcursor::after {
+  border-top-color: var(--color-primary);
+}
+.flownote-prose .suggestion {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: 3px;
+}
+
+.auth-input {
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
+}
+.auth-input:focus-visible {
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 3px #eef2ff;
+  outline: none;
+}
+.auth-input::placeholder {
+  color: var(--color-muted);
+}
+.auth-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
+#note-search:focus-visible {
+  outline: none;
+}

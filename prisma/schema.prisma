@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  notes         Note[]
+  folders       Folder[]
+  tags          Tag[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @default(now()) @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+enum TagColor {
+  indigo
+  sage
+  amber
+  rose
+  slate
+}
+
+model Note {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId   String?
+  folder     Folder?   @relation(fields: [folderId, userId], references: [id, userId], onDelete: NoAction, onUpdate: NoAction)
+  title      String    @default("Sin título")
+  content    Json      @default("{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}")
+  isPublic   Boolean   @default(false)
+  shareToken String?   @unique
+  isFavorite Boolean   @default(false)
+  isArchived Boolean   @default(false)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+  tags       NoteTag[]
+
+  @@unique([id, userId])
+  @@index([userId, deletedAt, isArchived, updatedAt])
+  @@index([folderId, userId])
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  notes     Note[]
+
+  @@unique([id, userId])
+  @@unique([userId, name])
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  color     TagColor  @default(slate)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  notes     NoteTag[]
+
+  @@unique([id, userId])
+  @@unique([userId, name])
+}
+
+// Composite foreign keys prevent cross-user associations even at database level.
+model NoteTag {
+  noteId String
+  tagId  String
+  userId String
+  note   Note   @relation(fields: [noteId, userId], references: [id, userId], onDelete: Cascade, onUpdate: NoAction)
+  tag    Tag    @relation(fields: [tagId, userId], references: [id, userId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([noteId, tagId])
+  @@index([tagId, userId])
+  @@index([userId])
+}
