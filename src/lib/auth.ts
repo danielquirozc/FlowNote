@@ -24,6 +24,10 @@ function createAuth() {
     },
     session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
     plugins: [nextCookies()],
+    trustedOrigins: [baseURL,
+      "http://localhost:3000",
+      "https://flownotedev.vercel.app",
+    ],
   });
 }
 
